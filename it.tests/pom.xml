@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.sling.models</groupId>
         <artifactId>Sling-Models</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>com.sling.models</groupId>
             <artifactId>Sling-Models.core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.3-SNAPSHOT</version>
             <type>bundle</type>
             <scope>provided</scope>
         </dependency>

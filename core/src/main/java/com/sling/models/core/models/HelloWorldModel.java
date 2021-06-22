@@ -1,48 +1,151 @@
-/*
- *  Copyright 2015 Adobe Systems Incorporated
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package com.sling.models.core.models;
 
+import java.util.Iterator;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.models.annotations.Default;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.Optional;
+import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.settings.SlingSettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+
 
 @Model(adaptables=Resource.class)
 public class HelloWorldModel {
+	private static final Logger LOG = LoggerFactory.getLogger(HelloWorldModel.class);
 
-    @Inject
-    private SlingSettingsService settings;
-
-    @Inject @Named("sling:resourceType") @Default(values="No resourceType")
-    protected String resourceType;
-
+	
+    @Inject @Optional
     private String message;
+    
+    @Inject @Optional
+    private String headline;
+   
+    @Inject @Optional
+    private String linkUrl;
+    
+    @Inject @Optional
+    private String linkText;
 
-    @PostConstruct
+	@Inject @Optional
+    private String fileReference;
+	
+	@Inject
+	private SlingSettingsService slingSettings;
+	
+	private String runModes;
+	private String[] vanity;
+	
+	@Self
+	Resource resource;
+
+
+
+	@PostConstruct
     protected void init() {
-        message = "\tHello World!\n";
-        message += "\tThis is instance: " + settings.getSlingId() + "\n";
-        message += "\tResource type is: " + resourceType + "\n";
-    }
+ 
+        message=this.getMessage();
+        headline=this.getHeadline();
+        linkUrl=this.getLinkUrl();
+        linkText=this.getLinkText();
+        fileReference=this.getFileReference();
+        
+        this.setMessage(message);
+        this.setHeadline(headline);
+        this.setLinkUrl(linkUrl);
+        this.setLinkText(linkText);
+        this.setFileReference(fileReference);
+        
+        runModes= slingSettings.getRunModes().toString();
+        
+        PageManager pm=resource.getResourceResolver().adaptTo(PageManager.class);
+        Page containingPage=pm.getContainingPage(resource);
+        ValueMap pageProps =containingPage.getProperties();
+        vanity = (String[]) pageProps.get("sling:vanityPath");
+        
+        
+//        ValueMap properties = res.adaptTo(ValueMap.class);
+//        LOG.info("The properties is $$$$$$$ "+ properties );
+//        String vanity=(String) properties.get("sling:vanityPath");
+//        LOG.info("The vanity is $$$$$$$ "+ vanity );
+        
+        //List<HelloWorldModel> childs=new ArrayList<>();
+        if(containingPage!=null) {
+        Iterator<Page> children= containingPage.listChildren();     
+        while(children.hasNext()) {
+        	Page childPages=children.next();
+        	LOG.info("The childPages are %%%%" +childPages.getPath());
+        	//LOG.info("The child Pages are %%%%" +children.next().getPath());
+        	
+        }
+        
+        }
+        
+	}
+    
+    
 
     public String getMessage() {
         return message;
     }
+    public void setMessage(String message) {
+		this.message = message;
+	}
+
+
+
+	public void setHeadline(String headline) {
+		this.headline = headline;
+	}
+
+    public void setLinkText(String linkText) {
+		this.linkText = linkText;
+	}
+
+
+	public void setLinkUrl(String linkUrl) {
+		this.linkUrl = linkUrl;
+	}
+
+	public String getFileReference() {
+		return fileReference;
+	}
+
+	public void setFileReference(String fileReference) {
+		this.fileReference = fileReference;
+	}
+
+
+	public String getHeadline() {
+    	return headline;
+    }
+    public String getLinkUrl() {
+    	return linkUrl;
+    }
+
+    public String getLinkText() {
+		return linkText;
+	}
+
+
+
+	public String getRunModes() {
+		return runModes;
+	}
+
+
+
+	public String[] getVanity() {
+		return vanity;
+	}
+
+    
 }

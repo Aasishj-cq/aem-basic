@@ -1,0 +1,7 @@
+<div data-sly-use.comp="com.sling.models.core.models.TextImage">
+    <sly data-sly-test="${!properties.title}"><h2>Configure the component</h2>
+    </sly>
+    <sly data-sly-test="${comp.title}" data-sly-unwrap>
+        <strong>${comp.title}</strong>
+    </sly>
+</div>

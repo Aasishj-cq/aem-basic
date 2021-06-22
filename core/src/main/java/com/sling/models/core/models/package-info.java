@@ -13,15 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package apps.sling.servlet.errorhandler;
+@Version("1.0")
+package com.sling.models.core.models;
 
-import com.adobe.cq.sightly.WCMUse;
-
-public class ResponseStatus extends WCMUse {
-    
-    @Override
-    public void activate() throws Exception {
-        getResponse().setStatus(404);
-        getResponse().setContentType("text/html");
-    }
-}
+import org.osgi.annotation.versioning.Version;
